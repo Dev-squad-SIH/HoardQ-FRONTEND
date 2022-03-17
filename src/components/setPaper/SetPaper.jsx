@@ -1,5 +1,6 @@
 import styles from './styles.module.css'
-import React from 'react'
+import React, { useState } from 'react'
+// import Select from 'react-select'
 import {
   Modal,
   ModalContent,
@@ -17,13 +18,52 @@ import {
   NumberInputField,
   NumberDecrementStepper,
   NumberIncrementStepper,
-  NumberInputStepper
+  NumberInputStepper,
+  Select
 } from '@chakra-ui/react';
 
 import { useDisclosure } from "@chakra-ui/react";
 import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons"
 const SetPaper = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [selected, setSelected] = useState("")
+
+  const ChangeOption = (event) => {
+    setSelected(event.target.value)
+  }
+
+  const english = [
+    "verbs",
+    "adjective",
+    "pronouns",
+  ];
+  const mathematics = [
+    "Matrix",
+    "Integrals",
+    "Differentiation",
+  ];
+  const science = [
+    "Hydrocarbons",
+    "Rotational Dynamics",
+    "Animal Life"
+  ];
+  let type = null;
+  let options = null;
+
+  if (selected === "English") {
+    type = english;
+  }
+  else if (selected === "Mathematics") {
+    type = mathematics;
+  }
+  else if (selected === "Science") {
+    type = science;
+  }
+
+  if (type) {
+    options = type.map((el) => <option key={el}>{el}</option>)
+  }
 
   return (
     <>
@@ -42,27 +82,22 @@ const SetPaper = () => {
               <ModalBody display="flex" alignItems="center">
                 <h1>Subject</h1>
                 <Menu>
-                  <MenuButton ml="10px" as={Button} rightIcon={<ChevronDownIcon />}>
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Science</MenuItem>
-                    <MenuItem>Mathematics</MenuItem>
-                  </MenuList>
+                  <Select  ml="15px" placeholder='Choose' onChange={ChangeOption}>
+                    <option >English</option>
+                    <option >Mathematics</option>
+                    <option >Science</option>
+                  </Select>
                 </Menu>
               </ModalBody>
 
               <ModalBody display="flex" alignItems="center">
                 <h1>Topics</h1>
                 <Menu>
-                  <MenuButton ml="18px" as={Button} rightIcon={<ChevronDownIcon />}>
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Matrix</MenuItem>
-                    <MenuItem>Hydrocabons</MenuItem>
-                    <MenuItem>Rotational Dynamcis</MenuItem>
-                  </MenuList>
+                  <Select >
+                {
+                  options
+                }
+              </Select>
                 </Menu>
               </ModalBody>
             </ModalBody>
@@ -130,6 +165,26 @@ const SetPaper = () => {
             <Button m="5px" rightIcon={<DownloadIcon />}>Answers</Button>
 
           </ModalBody>
+          <ModalBody>
+            <Select></Select>
+          </ModalBody>
+          <form>
+            <ModalBody>
+              <Select placeholder='Choose' onChange={ChangeOption}>
+                <option >Choose..</option>
+                <option >English</option>
+                <option >Mathematics</option>
+                <option >Science</option>
+              </Select>
+            </ModalBody>
+            <ModalBody>
+              <select >
+                {
+                  options
+                }
+              </select>
+            </ModalBody>
+          </form>
 
           {/* <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
