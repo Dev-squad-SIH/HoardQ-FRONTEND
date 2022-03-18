@@ -1,1 +1,2 @@
-export { SetPaper } from './SetPaper'
+import SetPaper from './SetPaper'
+export default SetPaper;

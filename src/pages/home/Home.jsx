@@ -1,14 +1,13 @@
 import styles from './styles.module.css'
-import Navbar from '../../components/navbar/index'
+import Navbar from '../../components/navbar'
 import { VStack } from '@chakra-ui/react'
-// import SetPaper from '../../components/setPaper/SetPaper'
-import LoginPage from '../../components/loginPage/LoginPage'
-const Home = () => {
+import FilterQuestions from '../../components/filterQuestions/FilterQuestions'
+
+const Home = () => {  
   return (
     <VStack>
-      {/* <Navbar /> */}
-      {/* <SetPaper/> */}
-      <LoginPage/>
+      <Navbar />
+      <FilterQuestions />
     </VStack>
   )
 }

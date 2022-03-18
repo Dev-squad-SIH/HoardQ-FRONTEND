@@ -1,1 +1,2 @@
-export { UploadQuestion } from './UploadQuestion'
+import UploadQuestion from './UploadQuestion'
+export default UploadQuestion
