@@ -1,0 +1,186 @@
+* {
+    font-family: sans-serif;
+  }
+  .container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+    .uploadquestion {
+      height: 670px;
+      width: 650px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-left: 28%;
+      margin-top: 21px;
+      border-radius: 30px;
+      box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2), 
+                  0px 0px 50px rgba(0, 0, 0, 0.2);
+    }
+    .header {
+      font-size: 2em;
+      width: max-content;
+      padding: 0.75em;
+      margin-top: 2.5em;
+      text-transform: capitalize;
+      margin-bottom: 660px;
+      font-weight: bold;
+    }
+    .divider {
+        width: 98%;
+        height: 1.5px;
+        margin: 0 0.5em;
+        background: #f54642;
+      }
+    .card {
+        position: fixed;
+        width: 1700px;
+        height: 600px;
+        padding: 1.5em;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1em;
+        margin-top: 80px;
+      }
+      form {
+        width: 550px;
+      }
+      .sub, .typ, .top{
+        margin-bottom: 20px;
+        padding: 0.8em;
+        margin-left: 10px;
+      }
+      .subject , .type, .topic{
+        border: 1px solid #000000;
+        background: #fff;
+        border-radius: 0.5em;
+        padding: 0.5em 0.5em;
+        margin-bottom: 1em;
+      }
+      .inputElement,.inputElements ,.answers , .inputElementQuestion {
+        outline: none;
+        border: none;
+        border: 1px solid #000000;
+        background: #fff;
+        padding: 0.5em 0.5em;
+        border-radius: 0.5em;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1em;
+        width: 100%;
+      }
+      .inputElementQuestion {
+          height: 65px;
+      }
+      .answers {
+        height: 43px;
+      }
+      .inputElement{
+        width: 100%;
+      }
+      .inputElements{
+        width: 106%;
+      }
+      .submitBtn {
+        outline: none;
+        background: #f54642;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border-radius: 30px;
+        padding: 0.7em 1.5em;
+        font-size: 1rem;
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5em;
+        cursor: pointer;
+        margin-left: 140px;
+      } 
+      .submitBtn:hover {
+        transition: 0.8s;
+        background: #fa8684;
+        color: black;
+      }
+      .sub , .typ, .top, .question , .option, .answer, .solution {
+        color: #000000;
+        font-size: 17px;
+        font-weight: normal;
+      }
+      .contain {
+          display: flex;
+          align-items: center;
+      }
+      .add {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        margin: -18px ;
+    }
+      .group div {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        outline: none;
+        height: 35px;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      @media (min-width: 300px) and (max-width: 700px) {
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .uploadquestion {
+            width: 350px;
+            height: 600px;
+            margin-left: 0px;
+        }
+        .header {
+            margin-bottom: 600px;
+        }
+        .contain {
+            margin-bottom: -40px;
+            /* margin */
+        }
+        .subjects {
+            margin-left: 90px;
+            margin-right: -75px;
+        }
+        .sub , .typ, .top{
+            margin: 0 -180px 80px 120px;
+        }
+        .submitBtn{
+            margin-bottom: 50px;
+          }
+        .inputElementQuestion {
+            width: 58%;
+            margin-left: 47px;
+            margin-top: 26px;
+        }
+        .add {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            margin: -18px ;
+        }
+        .inputElement ,.answers {
+            width: 58%;
+            margin-left: 57px;
+            margin-top: 26px;
+        }
+        .question ,.option ,.answer ,.solution {
+            margin: 0 -120px 0px 120px;
+        }
+        .group {
+            display: flex;
+        }
+      }
+  

@@ -10,16 +10,16 @@ import {
   Button,
   Icon
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   return (
-    <Flex width="full" align-items="center" justifyContent="center" marginTop="130px">
+    <Flex width="full" alignItems="center" justifyContent="center" marginTop="130px">
     <Box  p={8} maxWidth="500px" borderWidth={1} borderRadius={8} boxShadow="lg" width="350px" heigth="600px" border="1.5px solid #cad7cd">
       <Box textAlign="center">
         <Heading>Login</Heading>
       </Box>
       <Box my={4} textAlign="left">
-        <form>
           <FormControl mt={10} isRequired>
             <FormLabel>Email</FormLabel>
             <Input p={6} mt={3} type="email" placeholder="Enter your email id" borderWidth={2} border="1px solid #cad7cd" />
@@ -34,7 +34,12 @@ const LoginPage = () => {
           <Button width="full" mt={10} type="submit" backgroundColor="#f54642" color="white">
             Login
           </Button>
-        </form>
+          <Link to='/'>
+            <Button width="full" mt={5} type="submit" colorScheme={"blue"} color="white">
+              Home
+            </Button>
+          </Link>
+          
       </Box>
     </Box>
   </Flex>

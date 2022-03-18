@@ -1,5 +1,6 @@
 import styles from './styles.module.css'
-import React from 'react'
+import React, { useState } from 'react'
+// import {ReactSelect} from "react-select"
 import {
   Modal,
   ModalContent,
@@ -17,128 +18,71 @@ import {
   NumberInputField,
   NumberDecrementStepper,
   NumberIncrementStepper,
-  NumberInputStepper
+  NumberInputStepper,
+  Select,
+  Checkbox,
+  FormLabel,
+  FormControl,
+  Flex
 } from '@chakra-ui/react';
-
 import { useDisclosure } from "@chakra-ui/react";
 import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons"
-const SetPaper = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
+import { useSubject } from '../../subjectContext'
+import SelectTopics from '../selectTopics';
+const SetPaper = ({isOpen,onClose}) => {
+  const {types,difficulties,subjects,topics} = useSubject()
+  const { isOpen:isTopicOpen, onOpen:onTopicOpen, onClose:onTopicClose } = useDisclosure()
+  const [topicArr, setTopic] = useState([])
+  const [sub, setSub] = useState()
+  const [difficulty, setDifficulty] = useState()
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent >
-          <ModalHeader textAlign="center">Set Question Paper</ModalHeader>
+        <ModalContent>
+          <ModalHeader>Set Question Paper</ModalHeader>
           <ModalCloseButton />
-
-          <ModalBody display="flex" justifyContent="flex-end">
-
-            <ModalBody display="flex" flexDirection="column" alignItems="flex-start" >
-
-              <ModalBody display="flex" alignItems="center">
-                <h1>Subject</h1>
-                <Menu>
-                  <MenuButton ml="10px" as={Button} rightIcon={<ChevronDownIcon />}>
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Science</MenuItem>
-                    <MenuItem>Mathematics</MenuItem>
-                  </MenuList>
-                </Menu>
-              </ModalBody>
-
-              <ModalBody display="flex" alignItems="center">
-                <h1>Topics</h1>
-                <Menu>
-                  <MenuButton ml="18px" as={Button} rightIcon={<ChevronDownIcon />}>
-                    Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Matrix</MenuItem>
-                    <MenuItem>Hydrocabons</MenuItem>
-                    <MenuItem>Rotational Dynamcis</MenuItem>
-                  </MenuList>
-                </Menu>
-              </ModalBody>
-            </ModalBody>
-
-            <ModalBody display="flex" flexDirection="column"  >
-              <ModalBody display="flex" alignItems="center">
-                <p>Fill ups:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </ModalBody>
-              <ModalBody display="flex" alignItems="center">
-                <p>Match:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </ModalBody>
-              <ModalBody display="flex" alignItems="center">
-                <p>MCQs:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </ModalBody>
-
-            </ModalBody>
-
-
-          </ModalBody>
-
           <ModalBody>
-            <Button m="10px">Lorem</Button>
-            <Button m="10px">Ipsum</Button>
-            <Button m="10px">Ipsum</Button>
-
+            <Flex>
+              {
+                types.map(
+                  type => (
+                    <FormControl mr={3} ml={3} key={type}>
+                      <FormLabel>{type}</FormLabel>
+                      <NumberInput size='xs' step={1} defaultValue={0} min={0} max={6}>
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                  )
+                )
+              }
+            </Flex>
+            <Select placeholder='Select Subject' value={sub} onChange={e => { setSub(e.target.value); setTopic([]) }}>
+              {subjects.map(subject => (
+                <option value={subject}key={subject}>{subject}</option>
+              ))}
+            </Select>
+            <Select placeholder='Select Difficulty'value={difficulty}onChange={e=>setDifficulty(e.target.value)}>
+              {difficulties.map(difficulty => (
+                <option value={difficulty}key={difficulty}>{difficulty}</option>
+              ))}
+            </Select>
+            <Button onClick={onTopicOpen} disabled={sub?false:true}>Choose Topics</Button>
+            <Button ml={3}>Generate</Button>
           </ModalBody>
-          <ModalBody display="flex" alignItems="center">
-            <h1>Difficulty</h1>
-            <Menu>
-              <MenuButton ml="18px" as={Button} rightIcon={<ChevronDownIcon />}>
-                Actions
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Easy</MenuItem>
-                <MenuItem>Moderate</MenuItem>
-                <MenuItem>Tough</MenuItem>
-              </MenuList>
-            </Menu>
-            <Button ml="15px">Generate</Button>
-          </ModalBody>
-          <ModalBody>
-            <Button m="10px">Preview</Button>
-            <Button m="5px" rightIcon={<DownloadIcon />}>Questions</Button>
-            <Button m="5px" rightIcon={<DownloadIcon />}>Answers</Button>
 
-          </ModalBody>
-
-          {/* <ModalFooter>
+          <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter> */}
+          </ModalFooter>
         </ModalContent>
       </Modal>
+      <SelectTopics isOpen={isTopicOpen} onClose={onTopicClose} sub={sub} topics={topics} topicArr={topicArr}setTopic={setTopic}/>
     </>
   )
 }
