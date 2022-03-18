@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 import React, { useState } from 'react'
-// import Select from 'react-select'
+import {default as ReactSelect} from "react-select"
 import {
   Modal,
   ModalContent,
@@ -19,9 +19,9 @@ import {
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInputStepper,
-  Select
+  Select,
+  Checkbox
 } from '@chakra-ui/react';
-
 import { useDisclosure } from "@chakra-ui/react";
 import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons"
 const SetPaper = () => {
@@ -32,7 +32,6 @@ const SetPaper = () => {
   const ChangeOption = (event) => {
     setSelected(event.target.value)
   }
-
   const english = [
     "verbs",
     "adjective",
@@ -62,7 +61,7 @@ const SetPaper = () => {
   }
 
   if (type) {
-    options = type.map((el) => <option key={el}>{el}</option>)
+    options = type.map((el) => <Checkbox key={el}>{el}</Checkbox>)
   }
 
   return (
@@ -82,7 +81,7 @@ const SetPaper = () => {
               <ModalBody display="flex" alignItems="center">
                 <h1>Subject</h1>
                 <Menu>
-                  <Select  ml="15px" placeholder='Choose' onChange={ChangeOption}>
+                  <Select  ml="15px" placeholder='Choose' onChange={ChangeOption} size="md" width="150px">
                     <option >English</option>
                     <option >Mathematics</option>
                     <option >Science</option>
@@ -93,11 +92,11 @@ const SetPaper = () => {
               <ModalBody display="flex" alignItems="center">
                 <h1>Topics</h1>
                 <Menu>
-                  <Select >
+                  <Checkbox ml="18px" size="md" width="170px">
                 {
                   options
                 }
-              </Select>
+              </Checkbox>
                 </Menu>
               </ModalBody>
             </ModalBody>
@@ -105,7 +104,7 @@ const SetPaper = () => {
             <ModalBody display="flex" flexDirection="column"  >
               <ModalBody display="flex" alignItems="center">
                 <p>Fill ups:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
+                <NumberInput ml="10px"width="95px" size="md" defaultValue={1} min={1} max={6}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -115,7 +114,7 @@ const SetPaper = () => {
               </ModalBody>
               <ModalBody display="flex" alignItems="center">
                 <p>Match:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
+                <NumberInput ml="10px"width="95px" size="md" defaultValue={1} min={1} max={6}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -125,7 +124,7 @@ const SetPaper = () => {
               </ModalBody>
               <ModalBody display="flex" alignItems="center">
                 <p>MCQs:</p>
-                <NumberInput ml="10px" maxW="75px" size="md" defaultValue={1} min={1} max={6}>
+                <NumberInput ml="10px"width="95px" size="md" defaultValue={1} min={1} max={6}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -165,35 +164,9 @@ const SetPaper = () => {
             <Button m="5px" rightIcon={<DownloadIcon />}>Answers</Button>
 
           </ModalBody>
-          <ModalBody>
-            <Select></Select>
-          </ModalBody>
-          <form>
-            <ModalBody>
-              <Select placeholder='Choose' onChange={ChangeOption}>
-                <option >Choose..</option>
-                <option >English</option>
-                <option >Mathematics</option>
-                <option >Science</option>
-              </Select>
-            </ModalBody>
-            <ModalBody>
-              <select >
-                {
-                  options
-                }
-              </select>
-            </ModalBody>
-          </form>
-
-          {/* <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
+      
     </>
   )
 }
