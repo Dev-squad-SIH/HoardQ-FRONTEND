@@ -18,10 +18,12 @@ import {
   VStack,
   HStack,
   Textarea,
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useSubject } from '../../subjectContext'
+import { ApiService } from '../../api.services';
 const UploadQuestion = ({isOpen,onClose}) => {
   const {types,difficulties,subjects,topics} = useSubject()
   const [type, setType] = useState()
@@ -32,20 +34,22 @@ const UploadQuestion = ({isOpen,onClose}) => {
   const [matchOptionsB,setMatchOptionsB] = useState([])
   const [sub, setSub] = useState()
   const [question,setQuestion] = useState()
-  const [answer,setAnswer] = useState()
-  const [solution,setSolution] = useState()
+  let [answer,setAnswer] = useState()
+  const [solution, setSolution] = useState()
+  const [isUploading, setIsUploading] = useState(false)
+  const toast = useToast()
   const addMcqHandler = () => {
-    console.log(mcqOptions)
+    // console.log(mcqOptions)
     setMcqOptCount(mcqOptCount=>[...mcqOptCount,mcqOptCount.length+1])
   }
    const minusMcqHandler = () => {
-    console.log(mcqOptions)
+    // console.log(mcqOptions)
     setMcqOptCount(mcqOptCount=>mcqOptCount.slice(0,mcqOptCount.length-1))
   }
 
   const mcqInputHandler = (e, opt) => {
-    setMcqOptions(mcqOptions =>[...mcqOptions.slice(0,opt-1),e.target.value,mcqOptions.slice(opt,-1)] )
-    console.log(mcqOptions)
+    setMcqOptions(mcqOptions =>[...mcqOptions.slice(0,opt-1),e.target.value,...mcqOptions.slice(opt,-1)] )
+    // console.log(mcqOptions)
   }
 const addMatchHandler = () => {
     setMatchOptCount(matchOptCount=>[...matchOptCount,matchOptCount.length+1])
@@ -55,12 +59,110 @@ const addMatchHandler = () => {
   }
 
   const matchInputAHandler = (e, opt) => {
-    setMatchOptionsA(matchOptionsA =>[...matchOptionsA.slice(0,opt-1),e.target.value,matchOptionsA.slice(opt,-1)] )
-    console.log(matchOptionsA)
+    setMatchOptionsA(matchOptionsA =>[...matchOptionsA.slice(0,opt-1),e.target.value,...matchOptionsA.slice(opt,-1)] )
+    // console.log(matchOptionsA)
   }
   const matchInputBHandler = (e, opt) => {
-    setMatchOptionsB(matchOptionsB =>[...matchOptionsB.slice(0,opt-1),e.target.value,matchOptionsB.slice(opt,-1)] )
-    console.log(matchOptionsB)
+    setMatchOptionsB(matchOptionsB =>[...matchOptionsB.slice(0,opt-1),e.target.value,...matchOptionsB.slice(opt,-1)] )
+    // console.log(matchOptionsB)
+  }
+  const uploadHandler = async () => {
+    setIsUploading(true)
+    let option = {};
+    if (type === "MCQs") {
+      if (mcqOptions.length < 2) {
+        toast({
+            title: `More than one option required`,
+            status: 'warning',
+            isClosable: true,
+        })
+        setIsUploading(false)
+        return
+      }
+      option.options = mcqOptions
+    }
+    if (type === "Matches") {
+      option.matchOptions = {
+        lhs: matchOptionsA,
+        rhs: matchOptionsB
+      }
+      console.log(matchOptionsA.length, matchOptionsB.length)
+      const lenA = matchOptionsA.length
+      const lenB = matchOptionsB.length;
+      if (lenA < 2 || lenB < 2) {
+        toast({
+            title: `More than 1 row required`,
+            status: 'warning',
+            isClosable: true,
+        })
+         setIsUploading(false)
+        return
+      }
+      if(lenA !== lenB) {
+        toast({
+            title: `Enter all details`,
+            status: 'warning',
+            isClosable: true,
+        })
+         setIsUploading(false)
+        return
+      }
+      // Check this
+      // setAnswer('answer')
+      // console.log(answer)
+      answer = 'answer'
+    }
+    if (type === "True/False") {
+      option.boolField = ["true","false"]
+    }
+    const data = {description:question,subject:sub,questionType:type,answer:answer,option:option,solution:solution}
+    // console.log(data)
+    for (let i in data) {
+      if (!data[i]) {
+        console.log(i)
+          toast({
+            title: `Enter all details`,
+            status: 'warning',
+            isClosable: true,
+          })
+      setIsUploading(false)
+        return
+      }
+    }
+    const res = await ApiService.uploadQuestion(data)
+    if (res.status === 200) {
+      setIsUploading(false)
+      setType('');
+      setAnswer('')
+      setSolution('')
+      setQuestion('')
+      setSub('')
+      setMcqOptions([])
+      setMcqOptCount([1])
+      setMatchOptionsA([])
+      setMatchOptionsB([])
+      setMatchOptCount([1])
+      toast({
+            title: `Question uploaded successfully`,
+            status: 'success',
+            isClosable: true,
+        })
+    }
+    
+  }
+  const closeHandler = () => {
+    setIsUploading(false)
+    setType('');
+    setAnswer('')
+    setSolution('')
+    setQuestion('')
+    setSub('')
+    setMcqOptions([])
+    setMcqOptCount([1])
+    setMatchOptionsA([])
+    setMatchOptionsB([])
+    setMatchOptCount([1])
+    onClose();
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -158,10 +260,10 @@ const addMatchHandler = () => {
 
           <ModalFooter>
             <Button
-             colorScheme='blue' mr={3} onClick={onClose}>
+             colorScheme='blue' mr={3} onClick={closeHandler}>
               Close
             </Button>
-            <Button variant='ghost'>Upload</Button>
+            <Button variant='ghost'isLoading={isUploading} onClick={()=>uploadHandler()}>Upload</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

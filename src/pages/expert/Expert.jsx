@@ -2,10 +2,14 @@ import { Flex, IconButton, Spacer, useDisclosure, useMediaQuery } from '@chakra-
 import React from 'react'
 import {BiMenu } from 'react-icons/bi'
 import ExpertDrawer from '../../components/expertDrawer'
+import ExpertQuestion from '../../components/expertQuestion/ExpertQuestion'
 const Expert = () => {
   const { isOpen:isSideOpen, onOpen:onSideOpen, onClose:onSideClose } = useDisclosure()
   const btnRef = React.useRef()
   const [isNotSmallerScreen] = useMediaQuery('(min-width:600px)');
+  const sampleQuestion = {
+    subject:"English", topics:"topic1", difficulty:"Hard", id:"1", description:"sdfsdffsdfdsfsdfsdfds", type:"MCQs", options:["sfsdf","sfa"], answer:"sfsdf", solution:"sdfsdfsdfafdsfs",verifiedBy:"expert1"
+  }
   return (
       <>
           <Flex>
@@ -15,7 +19,9 @@ const Expert = () => {
                 placement='right'
                 onClose={onSideClose}
                 btnRef={btnRef}/>
-          </Flex>
+      </Flex>
+      <ExpertQuestion question={sampleQuestion}/>
+
         
       </>
   )

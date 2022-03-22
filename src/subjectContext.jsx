@@ -6,7 +6,7 @@ export function useSubject() {
     return useContext(SubjectContext)
 }
 export function SubjectProvider({ children }) {
-    const types = ["Fill Ups", "Matches", "True/False", "MCQs"]
+    const types = ["Matches", "True/False", "MCQs"]
     const difficulties = ["Easy", "Moderate", "Hard"]
     const subjects = ["English", "Maths", "Physics", "Chemistry", "Biology"]
     const topics = {
