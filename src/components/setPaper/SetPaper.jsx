@@ -23,10 +23,11 @@ import {
   Checkbox,
   FormLabel,
   FormControl,
-  Flex
+  Flex,
+  Icon
 } from '@chakra-ui/react';
 import { useDisclosure } from "@chakra-ui/react";
-import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons"
+import { FaFilePdf } from "react-icons/fa"
 import { useSubject } from '../../subjectContext'
 import SelectTopics from '../selectTopics';
 const SetPaper = ({isOpen,onClose}) => {
@@ -35,6 +36,15 @@ const SetPaper = ({isOpen,onClose}) => {
   const [topicArr, setTopic] = useState([])
   const [sub, setSub] = useState()
   const [difficulty, setDifficulty] = useState()
+  const [openDownload, setOpenDownload] = useState(false)
+  const [fillUps, setFillUps] = useState(0)
+  const [matches, setMatches] = useState(0)
+  const [TF,setTF] = useState(0)
+  const [MCQ,setMCQ] = useState(0)
+  const generateHandler = () => {
+    console.log(sub,difficulty,fillUps,matches,TF,MCQ,topicArr)
+    setOpenDownload(true)
+  }
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -43,37 +53,69 @@ const SetPaper = ({isOpen,onClose}) => {
           <ModalHeader>Set Question Paper</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex>
+            <Flex flexWrap={"wrap"}>
               {
                 types.map(
                   type => (
-                    <FormControl mr={3} ml={3} key={type}>
-                      <FormLabel>{type}</FormLabel>
+                    <FormControl mx={3} mb={2} key={type}maxW={'100px'}>
+                      <FormLabel fontWeight={"bold"}>{type}</FormLabel>
                       <NumberInput size='xs' step={1} defaultValue={0} min={0} max={6}>
-                        <NumberInputField />
-                        <NumberInputStepper>
-                          <NumberIncrementStepper />
-                          <NumberDecrementStepper />
-                        </NumberInputStepper>
+                        <NumberInputField value={fillUps} />
+                        {
+                          type==="Fill Ups"?<NumberInputStepper>
+                          <NumberIncrementStepper onClick={() => setFillUps(count=>count<6?count+1:count)}/>
+                          <NumberDecrementStepper  onClick={() => setFillUps(count=>count>0?count-1:count)}/>
+                        </NumberInputStepper>:''
+                        }
+                        {
+                          type==="Match"?<NumberInputStepper>
+                            <NumberIncrementStepper onClick={() => setMatches(count=>count<6?count+1:count)}/>
+                            <NumberDecrementStepper  onClick={() => setMatches(count=>count>0?count-1:count)}/>
+                          </NumberInputStepper>:''
+                        }
+                        {
+                          type==="True/False"?<NumberInputStepper>
+                            <NumberIncrementStepper onClick={() => setTF(count=>count<6?count+1:count)}/>
+                            <NumberDecrementStepper  onClick={() => setTF(count=>count>0?count-1:count)}/>
+                          </NumberInputStepper>:''
+                        }
+                        {
+                          type==="MCQ"?<NumberInputStepper>
+                            <NumberIncrementStepper onClick={() => setMCQ(count=>count<6?count+1:count)}/>
+                            <NumberDecrementStepper  onClick={() => setMCQ(count=>count>0?count-1:count)}/>
+                          </NumberInputStepper>:''
+                        }
+                        
                       </NumberInput>
                     </FormControl>
                   )
                 )
               }
             </Flex>
-            <Select placeholder='Select Subject' value={sub} onChange={e => { setSub(e.target.value); setTopic([]) }}>
+            <Select  mt={"5"} placeholder='Select Subject' value={sub} onChange={e => { setSub(e.target.value); setTopic([]) }}>
               {subjects.map(subject => (
                 <option value={subject}key={subject}>{subject}</option>
               ))}
             </Select>
-            <Select placeholder='Select Difficulty'value={difficulty}onChange={e=>setDifficulty(e.target.value)}>
+            <Select mt={"3"} placeholder='Select Difficulty'value={difficulty}onChange={e=>setDifficulty(e.target.value)}>
               {difficulties.map(difficulty => (
                 <option value={difficulty}key={difficulty}>{difficulty}</option>
               ))}
             </Select>
-            <Button onClick={onTopicOpen} disabled={sub?false:true}>Choose Topics</Button>
-            <Button ml={3}>Generate</Button>
-          </ModalBody>
+            <Flex mt={5}>
+              <Button onClick={onTopicOpen} disabled={sub?false:true}>Choose Topics</Button>
+              <Button ml={3}colorScheme={"green"} onClick={()=>generateHandler()}>Generate</Button>
+            </Flex>
+            {
+              openDownload ? (
+                <Flex mt={3}>
+                  <Button>Question paper <Icon ml={1}as={FaFilePdf}/></Button>
+                  <Button ml={3}>Solution <Icon ml={1}as={FaFilePdf}/></Button>
+                </Flex>
+              ):''
+            }
+            
+            </ModalBody>
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
