@@ -5,7 +5,7 @@ import styles from './styles.module.css'
 const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
   
   const selectTopicHandler = (e,topic) => {
-    console.log(topic)
+    console.log(topic,topicArr)
     if (topicArr.includes(topic)) {
       let topicIndex = topicArr.indexOf(topic);
       setTopic(topicArr=>topicArr.splice(topicIndex,1))
@@ -36,7 +36,7 @@ const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
+              Save
             </Button>
           </ModalFooter>
         </ModalContent>

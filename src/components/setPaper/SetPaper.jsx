@@ -61,17 +61,19 @@ const SetPaper = ({isOpen,onClose}) => {
                       <FormLabel fontWeight={"bold"}>{type}</FormLabel>
                       <NumberInput size='xs' step={1} defaultValue={0} min={0} max={6}>
                         <NumberInputField value={fillUps} />
-                        {
-                          type==="Fill Ups"?<NumberInputStepper>
+                        {/* {
+                          type === "Fill Ups" ?
+                            (<NumberInputStepper>
                           <NumberIncrementStepper onClick={() => setFillUps(count=>count<6?count+1:count)}/>
                           <NumberDecrementStepper  onClick={() => setFillUps(count=>count>0?count-1:count)}/>
-                        </NumberInputStepper>:''
-                        }
+                        </NumberInputStepper>):''
+                        } */}
                         {
-                          type==="Match"?<NumberInputStepper>
+                          type === "Matches" ?
+                            (<NumberInputStepper>
                             <NumberIncrementStepper onClick={() => setMatches(count=>count<6?count+1:count)}/>
                             <NumberDecrementStepper  onClick={() => setMatches(count=>count>0?count-1:count)}/>
-                          </NumberInputStepper>:''
+                          </NumberInputStepper>):''
                         }
                         {
                           type==="True/False"?<NumberInputStepper>
@@ -80,7 +82,7 @@ const SetPaper = ({isOpen,onClose}) => {
                           </NumberInputStepper>:''
                         }
                         {
-                          type==="MCQ"?<NumberInputStepper>
+                          type==="MCQs"?<NumberInputStepper>
                             <NumberIncrementStepper onClick={() => setMCQ(count=>count<6?count+1:count)}/>
                             <NumberDecrementStepper  onClick={() => setMCQ(count=>count>0?count-1:count)}/>
                           </NumberInputStepper>:''

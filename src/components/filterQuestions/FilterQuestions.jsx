@@ -1,46 +1,63 @@
-import { Flex, VStack,Select, IconButton,useMediaQuery,useDisclosure, Tag, TagCloseButton, TagLabel, Spacer, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, TagLeftIcon } from '@chakra-ui/react';
+import { Flex, VStack,Select, IconButton,useMediaQuery,useDisclosure, Tag, TagCloseButton, TagLabel, Spacer, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, TagLeftIcon, filter, Spinner } from '@chakra-ui/react';
 import { FaFilter } from 'react-icons/fa'
 import SelectTopics from '../selectTopics';
 import styles from './styles.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSubject } from '../../subjectContext'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import FilterQuestionCard from '../filterQuestionCard';
+import { ApiService } from '../../api.services';
 const FilterQuestions = () => {
   const {types,difficulties,subjects,topics} = useSubject()
   const [sub, setSub] = useState()
   const [difficulty, setDifficulty] = useState()
+  const [type, setType] = useState()
   const [isNotSmallerScreen] = useMediaQuery('(min-width:600px)');
   const [topicArr, setTopic] = useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [page, setPage] = useState(0)
-  const [questions,setQuestions] = useState([])
-  const fetchQuestion = async () => {
-    // Sample api
-    const res = await fetch(`https://jsonplaceholder.typicode.com/photos?_page=${page}&_limit=10`)
-    const data = await res.json();
-    console.log(data)
+  const [questions, setQuestions] = useState([])
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [canFilter, setCanFilter] = useState(false);
+  const [filterLoading,setFilterLoading] =useState(false)
+  const limit = 5;
+  const filterHandler = async () => {
+    setFilterLoading(true)
+    setQuestions([])
+    const data = { topics:topicArr, difficulty, subject:sub, type }
+    const query = {page:page+1,limit}
+    const res = await ApiService.getFilteredQuestion(data, query)
+    console.log(res)
+    setQuestions(questions=>[...questions,...res.data.data])
+    console.log(questions)
     setPage(page => page + 1)
-    setTimeout(() => {
-      setQuestions(questions.concat(data))
-    },1500)
+    setIsFiltering(true)
+    setFilterLoading(false)
   }
-  const sampleQuestion = {
-    subject: "Subject1",
-    topics: ["Topic1","Topic2"],
-    difficulty: "Easy",
-    id: "1",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    type: "MCQs",
-    options:["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed","sed do eiusmod tempor incididunt","labore et dolore magna aliqua."],
-    answer: ["Lorem ipsum dolor sit amet"],
-    solution:"consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  const fetchQuestion = async () => {
+    console.log(questions)
+      const data = { topics:topicArr, difficulty, subject:sub, type }
+      const query = {page:page+1,limit}
+      const res = await ApiService.getFilteredQuestion(data,query)
+    console.log(res)
+    if (res.status === 200) {
+      setQuestions(questions.concat(res.data.data))
+    }
+      
+    setPage(page => page + 1)
   }
+  useEffect(() => {
+    if (!type || !difficulty || !sub || !topicArr.length) {
+      setCanFilter(false)
+    } else {
+      setCanFilter(true)
+    }
+  }, [type,difficulty,sub,topicArr])
   return (
     <>
       <VStack px={isNotSmallerScreen?10:2} py={isNotSmallerScreen?6:2} width={"100%"} align={"flex-start"}>
         <Flex>
-          <Select placeholder='Select Type'm={isNotSmallerScreen?'5':'2'}>
+          <Select placeholder='Select Type'm={isNotSmallerScreen?'5':'2'}value={type}onChange={e=>setType(e.target.value)}>
             {
               types.map(type=>(<option value={type}key={type}>{type}</option>))
             }
@@ -62,21 +79,30 @@ const FilterQuestions = () => {
           
           </Flex>
           <Spacer/>
-          <IconButton icon={<FaFilter/>} m={isNotSmallerScreen?'5':'2'}></IconButton>
+          <IconButton isLoading={filterLoading} icon={<FaFilter/>} m={isNotSmallerScreen?'5':'2'} disabled={!canFilter} onClick={()=>filterHandler()}></IconButton>
         </Flex>
-        <FilterQuestionCard question={sampleQuestion}/>
+        {
+          
+          isFiltering ? (
+          <>
+          {questions.slice(0,limit).map((question) => (
+                <FilterQuestionCard question={question} key={question._id}/>
+              ))}
+              
             <InfiniteScroll
               dataLength={questions.length}
               next={fetchQuestion}
               hasMore={true}
-              loader={<h4>Loading...</h4>}
+                loader={<h4>Loading ...</h4>}
             >
-              {questions.map((question) => (
-                <div key={question.title}>
-                  {question.title}
-                </div>
+              {questions.slice(limit,questions.length).map((question) => (
+                <FilterQuestionCard question={question} key={question._id}/>
               ))}
             </InfiniteScroll>
+              </>
+          ):''
+        }
+            
       </VStack>
       
       <SelectTopics isOpen={isOpen} onClose={onClose} sub={sub} topics={topics} topicArr={topicArr}setTopic={setTopic}/>
