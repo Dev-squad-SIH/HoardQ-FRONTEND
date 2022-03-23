@@ -16,5 +16,8 @@ export const ApiService = {
     },
     getQuestionDetails: (id) => {
         return axios.get(API_URL + `api/get-questions/ById/${id}`)
-    }
+    },
+    expertLogin: (data) => {
+        return axios.post(API_URL + 'auth/login', data)
+    },
 }
