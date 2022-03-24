@@ -5,14 +5,20 @@ import styles from './styles.module.css'
 const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
   
   const selectTopicHandler = (e,topic) => {
-    console.log(topic,topicArr)
+    console.log(topic);
     if (topicArr.includes(topic)) {
+      
       let topicIndex = topicArr.indexOf(topic);
-      setTopic(topicArr=>topicArr.splice(topicIndex,1))
+      topicArr.splice(topicIndex,1)
+      setTopic(topicArr)
+      console.log(topicArr);
     } else {
-      setTopic(topicArr=>[...topicArr,topic])
+      topicArr.push(topic);
+      setTopic(topicArr);
+      
     }
-    console.log(topicArr)
+    // console.log(topicArr)
+    // console.log(topics[sub]);
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -22,7 +28,7 @@ const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
           <ModalCloseButton />
           <ModalBody>
     <>
-      {
+      { 
               sub?topics[sub].map(topic => (
                 <Tag size={'md'} key={topic}mr={2} variant='subtle' colorScheme={topicArr.includes(topic)?'red':'cyan'} value={topic} onClick={e=>selectTopicHandler(e,topic)}>
                   {topicArr.includes(topic) ? (<TagLeftIcon boxSize='12px' as={MinusIcon} />) : (<TagLeftIcon boxSize='12px' as={AddIcon} />)}

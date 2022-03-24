@@ -40,6 +40,7 @@ const FilterQuestions = () => {
       const query = {page:page+1,limit}
       const res = await ApiService.getFilteredQuestion(data,query)
     console.log(res)
+    console.log(data);
     if (res.status === 200) {
       setQuestions(questions.concat(res.data.data))
     }
@@ -52,7 +53,8 @@ const FilterQuestions = () => {
     } else {
       setCanFilter(true)
     }
-  }, [type,difficulty,sub,topicArr])
+  }, [type,difficulty,sub,topicArr]);
+
   return (
     <>
       <VStack px={isNotSmallerScreen?10:2} py={isNotSmallerScreen?6:2} width={"100%"} align={"flex-start"}>
