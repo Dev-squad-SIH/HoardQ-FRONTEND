@@ -1,4 +1,4 @@
-import { Flex, VStack,Select, IconButton,useMediaQuery,useDisclosure, Tag, TagCloseButton, TagLabel, Spacer, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, TagLeftIcon, filter, Spinner } from '@chakra-ui/react';
+import { Flex, VStack,Select, IconButton,useMediaQuery,useDisclosure, Tag, TagCloseButton, TagLabel, Spacer, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, TagLeftIcon, filter, Spinner, Text } from '@chakra-ui/react';
 import { FaFilter } from 'react-icons/fa'
 import SelectTopics from '../selectTopics';
 import styles from './styles.module.css';
@@ -16,36 +16,43 @@ const FilterQuestions = () => {
   const [topicArr, setTopic] = useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [page, setPage] = useState(0)
-  const [questions, setQuestions] = useState([])
+  const [questions, setQuestions] = useState()
   const [isFiltering, setIsFiltering] = useState(false);
   const [canFilter, setCanFilter] = useState(false);
   const [filterLoading,setFilterLoading] =useState(false)
   const limit = 5;
+  // Fix infinite scrolling
   const filterHandler = async () => {
     setFilterLoading(true)
-    setQuestions([])
     const data = { topics:topicArr, difficulty, subject:sub, type }
     const query = {page:page+1,limit}
     const res = await ApiService.getFilteredQuestion(data, query)
     console.log(res)
-    setQuestions(questions=>[...questions,...res.data.data])
-    console.log(questions)
-    setPage(page => page + 1)
-    setIsFiltering(true)
     setFilterLoading(false)
+      // setQuestions([])
+
+    // check this - Previous elements aren't replaced(bug)
+
+      setQuestions(res.data.data)
+    // setPage(page => page + 1)
+    // if (!questions?.length) {
+    //   setIsFiltering(false)
+    //   return
+    // }
+    // setIsFiltering(true)
   }
-  const fetchQuestion = async () => {
-    console.log(questions)
-      const data = { topics:topicArr, difficulty, subject:sub, type }
-      const query = {page:page+1,limit}
-      const res = await ApiService.getFilteredQuestion(data,query)
-    console.log(res)
-    if (res.status === 200) {
-      setQuestions(questions.concat(res.data.data))
-    }
+  // const fetchQuestion = async () => {
+  //   console.log(questions)
+  //     const data = { topics:topicArr, difficulty, subject:sub, type }
+  //     const query = {page:page+1,limit}
+  //     const res = await ApiService.getFilteredQuestion(data,query)
+  //   console.log(res)
+  //   if (res.status === 200) {
+  //     setQuestions(questions.concat(res.data.data))
+  //   }
       
-    setPage(page => page + 1)
-  }
+  //   setPage(page => page + 1)
+  // }
   useEffect(() => {
     if (!type || !difficulty || !sub || !topicArr.length) {
       setCanFilter(false)
@@ -82,25 +89,31 @@ const FilterQuestions = () => {
           <IconButton isLoading={filterLoading} icon={<FaFilter/>} m={isNotSmallerScreen?'5':'2'} disabled={!canFilter} onClick={()=>filterHandler()}></IconButton>
         </Flex>
         {
-          
-          isFiltering ? (
-          <>
-          {questions.slice(0,limit).map((question) => (
+           questions?.length===0?<Text align="center">No question found!</Text>:''
+        }
+        {
+          questions?.map((question) => (
                 <FilterQuestionCard question={question} key={question._id}/>
-              ))}
+              ))
+          // isFiltering ? (
+          // <>
+          // {questions.slice(0,limit).map((question) => (
+          //       <FilterQuestionCard question={question} key={question._id}/>
+          //     ))}
               
-            <InfiniteScroll
-              dataLength={questions.length}
-              next={fetchQuestion}
-              hasMore={true}
-                loader={<h4>Loading ...</h4>}
-            >
-              {questions.slice(limit,questions.length).map((question) => (
-                <FilterQuestionCard question={question} key={question._id}/>
-              ))}
-            </InfiniteScroll>
-              </>
-          ):''
+          //   <InfiniteScroll
+          //     dataLength={questions.length}
+          //     next={fetchQuestion}
+          //     hasMore={true}
+          //     loader={<h4>Loading ...</h4>}
+              
+          //   >
+          //     {questions.slice(limit).map((question) => (
+          //       <FilterQuestionCard question={question} key={question._id}/>
+          //     ))}
+          //   </InfiniteScroll>
+          //     </>
+          // ):''
         }
             
       </VStack>

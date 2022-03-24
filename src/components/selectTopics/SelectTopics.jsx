@@ -5,14 +5,12 @@ import styles from './styles.module.css'
 const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
   
   const selectTopicHandler = (e,topic) => {
-    console.log(topic,topicArr)
     if (topicArr.includes(topic)) {
       let topicIndex = topicArr.indexOf(topic);
-      setTopic(topicArr=>topicArr.splice(topicIndex,1))
+      setTopic(topicArr => [...topicArr.slice(0,topicIndex),...topicArr.slice(topicIndex+1)])
     } else {
       setTopic(topicArr=>[...topicArr,topic])
     }
-    console.log(topicArr)
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

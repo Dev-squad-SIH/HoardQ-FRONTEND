@@ -1,79 +1,157 @@
 import { EditIcon } from '@chakra-ui/icons';
-import { Box, Button, Container, Flex, IconButton, Select, Spacer, Tag, Text, useDisclosure, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Box, Button, Container, Flex, IconButton, ScaleFade, Select, Spacer, Tag, Text, useDisclosure, useToast, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react'
+import { ApiService } from '../../api.services';
 import { useSubject } from '../../subjectContext';
 import SelectTopics from '../selectTopics';
 
-const ExpertQuestion = ({ question }) => {
-    const { subject, topics, difficulty, id, description, type, options, answer, solution,verifiedBy } = question;
-    const { difficulties } = useSubject()
+const ExpertQuestion = ({ index, question, setQuestions }) => {
+  console.log(index)
+  const { topics } = useSubject()
+  const toast = useToast()
+  const { subject, _id:id, description, questionType:type, option, answer, solution } = question;
+  const { difficulties } = useSubject()
   const [topicArr, setTopic] = useState([])
+  const [difficulty,setDifficulty] = useState()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isDropping,setIsDropping] = useState(false)
+  const [isFreezing, setIsFreezing] = useState(false)
+  const [isFreezable,setIsFreezable] = useState(false)
+  useEffect(() => {
+    if (topicArr !== [] && difficulty) setIsFreezable(true)
+    return
+  }, [topicArr,difficulty])
+  
+  const freezeHandler = async () => {
+    
+    setIsFreezing(true)
+    const qID = id;
+    const token = localStorage.getItem('hoardQToken')
+    const data = { topicArr, difficulty }
+    const res = await ApiService.freezeQuestion(token, qID,data)
+    console.log(res)
+    if (res.status === 200) {
+      toast({
+        title: "Question added successfully!",
+        duration: "3000",
+        status: "success",
+        isClosable:true
+      })
+      setQuestions(questions =>[...questions.slice(0,index),...questions.slice(index+1)])
+      setTopic([])
+      setDifficulty('')
+    }
+    setIsFreezing(false)
+    return
+  }
+  const dropHandler = async () => {
+    setIsDropping(true)
+    const qID = id;
+    const token = localStorage.getItem('hoardQToken')
+    const res = await ApiService.dropQuestion(token, qID)
+    console.log(res)
+    if (res.status === 200) {
+      toast({
+        title: "Question deleted successfully!",
+        duration: "3000",
+        status: "success",
+        isClosable:true
+      })
+      setQuestions(questions =>[...questions.slice(0,index),...questions.slice(index+1)])
+      setTopic([])
+      setDifficulty('')
+    }
+    setIsDropping(false)
+  }
   return (
-      <>
-      <Container maxW='container.xl' border={"2px"} p={5}mt={5}>
-            <Flex
-             w={"100%"} mb={2}>
-              <Box>
-                  <span><b>Subject</b><Tag mx={1}>{subject}</Tag></span>
-                  
-                </Box>
-                <Spacer/>
-                  <Tag >{type}</Tag>
-            </Flex>
-          
-            <Box m={"3"} fontWeight={"semibold"} mt={6}>
-                <Text as={"u"} fontWeight={"extrabold"}>Question</Text>
-              <Text>{description}</Text>
-            </Box>
-            {type === "MCQs" ? (
-                <VStack align={"flex-start"} m={3}>
-                <Text as={"u"} fontWeight={"extrabold"}>Options</Text>
-              {
-                  options.map((option,index) => (
-                      <Text key={index}>{`${index+1})`} {option}</Text>
-                  ))
-                }
-                
-              </VStack>
-            ) : ''}
-            <VStack alignItems={"flex-start"} mt={6}>
-                <Flex w={"100%"}alignItems={"center"}>
-                    <Text as={'u'} fontWeight={"bold"}>Answer</Text>
-                    <Spacer/>
-                    <IconButton icon={<EditIcon />}/>
-                </Flex>
-            <Text>{answer}</Text>
-            </VStack>
-            <VStack alignItems={"flex-start"} mt={6}>
-                <Flex w={"100%"}alignItems={"center"}>
-                    <Text as={'u'} fontWeight={"bold"}>Solution</Text>
-                    <Spacer/>
-                    <IconButton icon={<EditIcon />}/>
-                </Flex>
-            <Text>{solution}</Text>
-            </VStack>
-        <Flex flexWrap={"wrap"}>
-                <VStack align={"flex-start"} >
-                    <Flex>
-                        <Button mt={5} mr={3}>Drop</Button>
-                        <Button mt={5} mr={3}>Edit</Button>
-              <Button mt={5} onClick={onOpen}>Set topics</Button>
+    <>
+        <Container maxW='container.xl' border={"2px"} p={5}mt={5}>
+                    <Flex
+                    w={"100%"} mb={2}>
+                      <Box>
+                          <span><b>Subject</b><Tag mx={1}>{subject}</Tag></span>
+                          
+                        </Box>
+                        <Spacer/>
+                          <Tag >{type}</Tag>
                     </Flex>
-                    
                   
-                  <Select placeholder='Set Difficulty'>
-                        {
-                        difficulties.map(difficulty=>(<option key={difficulty}>{difficulty}</option>))
+                    <Box m={"3"} fontWeight={"semibold"} mt={6}>
+                        <Text as={"u"} fontWeight={"extrabold"}>Question</Text>
+                      <Text>{description}</Text>
+                    </Box>
+                    {type === "MCQs" ? (
+                        <VStack align={"flex-start"} m={3}>
+                        <Text as={"u"} fontWeight={"extrabold"}>Options</Text>
+                      {
+                          option.options?.map((option,index) => (
+                              <Text key={index}>{`${index+1})`} {option}</Text>
+                          ))
                         }
-                    </Select>
-                    <Button mt={5}>Freeze</Button>
-          </VStack>
-          
-        </Flex>
-          
-    </Container>
-      <SelectTopics isOpen={isOpen} onClose={onClose} sub={"English"} topics={{ "English": ["topic1","topic2"] }} topicArr={topicArr}setTopic={setTopic}/>
+                        
+                      </VStack>
+                    ) : ''}
+                    {type === "Matches" ? (
+                    <VStack align={"flex-start"} m={3}>
+                      <Flex w={"100%"}alignItems={"center"}>
+                            <Text as={'u'} fontWeight={"bold"}>Match</Text>
+                            <Spacer/>
+                            <IconButton icon={<EditIcon />}/>
+                        </Flex>
+                        {
+                                    [...Array(option.matchOptions?.lhs.length).keys()].map((index) => (
+                                        <Flex width={"90%"}>
+                                        <Box width={"50%"}>{option.matchOptions?.lhs[index]}</Box>
+                                          <Box width={"50%"}>{option.matchOptions?.rhs[index]}</Box>
+                                        </Flex>
+                                    ))
+                        }
+                      </VStack>
+                      ) : ''}
+                      {
+                        type !== 'Matches' ? (
+                          <VStack alignItems={"flex-start"} mt={6}>
+                                    
+                                      <Flex w={"100%"}alignItems={"center"}>
+                                          <Text as={'u'} fontWeight={"bold"}>Answer</Text>
+                                          <Spacer/>
+                                          <IconButton icon={<EditIcon />}/>
+                                      </Flex>
+                                  <Text>{answer}</Text>
+                                  </VStack>
+                        ):''
+                      }
+                    
+                    <VStack alignItems={"flex-start"} mt={6}>
+                        <Flex w={"100%"}alignItems={"center"}>
+                            <Text as={'u'} fontWeight={"bold"}>Solution</Text>
+                            <Spacer/>
+                            <IconButton icon={<EditIcon />}/>
+                        </Flex>
+                    <Text>{solution}</Text>
+                    </VStack>
+                <Flex flexWrap={"wrap"}>
+                        <VStack align={"flex-start"} >
+                            <Flex>
+                                <Button mt={5} mr={3} isLoading={isDropping} onClick={()=>dropHandler()}>Drop</Button>
+                                <Button mt={5} mr={3}>Edit</Button>
+                      <Button mt={5} onClick={onOpen}>Set topics</Button>
+                            </Flex>
+                            
+                          
+                          <Select placeholder='Set Difficulty' value={difficulty} onChange={e=>setDifficulty(e.target.value)}>
+                                {
+                                difficulties?.map(difficulty=>(<option key={difficulty}>{difficulty}</option>))
+                                }
+                            </Select>
+                      <Button mt={5} isLoading={isFreezing} disabled={!isFreezable} onClick={()=>freezeHandler()}>Freeze</Button>
+                  </VStack>
+                  
+                </Flex>
+                  
+            </Container>
+      
+      <SelectTopics isOpen={isOpen} onClose={onClose} sub={subject} topics={topics} topicArr={topicArr}setTopic={setTopic}/>
                         </>
     )
 }

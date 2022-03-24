@@ -8,7 +8,7 @@ import UploadQuestion from '../uploadQuestion'
 import SetPaper from '../setPaper'
 import { Link } from 'react-router-dom'
 
-const Navbar = ({topics,subjects,difficulties,types}) => {
+const Navbar = () => {
   const { isOpen:isSideOpen, onOpen:onSideOpen, onClose:onSideClose } = useDisclosure()
   const { isOpen:isUploadOpen, onOpen:onUploadOpen, onClose:onUploadClose } = useDisclosure()
   const { isOpen:isPaperOpen, onOpen:onPaperOpen, onClose:onPaperClose } = useDisclosure()

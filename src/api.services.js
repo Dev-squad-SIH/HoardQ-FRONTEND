@@ -20,4 +20,13 @@ export const ApiService = {
     expertLogin: (data) => {
         return axios.post(API_URL + 'auth/login', data)
     },
+    getExpertDetails: (token) => {
+        return axios.get(API_URL + 'api/expertDetails', { headers: { auth_token: token } })
+    },
+    freezeQuestion: (token, qID, data) => {
+        return axios.put(API_URL + `api/freezeQuestion/${qID}`, data, { headers: { auth_token: token } })
+    },
+    dropQuestion: (token, qID) => {
+        return axios.delete(API_URL + `api/dropQuestion/${qID}`, { headers: { auth_token: token } })
+    }
 }

@@ -48,7 +48,7 @@ const UploadQuestion = ({isOpen,onClose}) => {
   }
 
   const mcqInputHandler = (e, opt) => {
-    setMcqOptions(mcqOptions =>[...mcqOptions.slice(0,opt-1),e.target.value,...mcqOptions.slice(opt,-1)] )
+    setMcqOptions(mcqOptions =>[...mcqOptions.slice(0,opt-1),e.target.value,...mcqOptions.slice(opt)] )
     // console.log(mcqOptions)
   }
 const addMatchHandler = () => {
@@ -59,11 +59,11 @@ const addMatchHandler = () => {
   }
 
   const matchInputAHandler = (e, opt) => {
-    setMatchOptionsA(matchOptionsA =>[...matchOptionsA.slice(0,opt-1),e.target.value,...matchOptionsA.slice(opt,-1)] )
+    setMatchOptionsA(matchOptionsA =>[...matchOptionsA.slice(0,opt-1),e.target.value,...matchOptionsA.slice(opt)] )
     // console.log(matchOptionsA)
   }
   const matchInputBHandler = (e, opt) => {
-    setMatchOptionsB(matchOptionsB =>[...matchOptionsB.slice(0,opt-1),e.target.value,...matchOptionsB.slice(opt,-1)] )
+    setMatchOptionsB(matchOptionsB =>[...matchOptionsB.slice(0,opt-1),e.target.value,...matchOptionsB.slice(opt)] )
     // console.log(matchOptionsB)
   }
   const uploadHandler = async () => {
