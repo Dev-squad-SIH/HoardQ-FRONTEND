@@ -14,6 +14,7 @@ const Expert = () => {
   const [isNotSmallerScreen] = useMediaQuery('(min-width:600px)');
   const [expertDetails, setExpertDetails] = useState({})
   const [questions, setQuestions] = useState()
+  const [verifiedCount,setVerifiedCount] = useState()
   const navigate = useNavigate()
   useEffect(async () => {
     const token = localStorage.getItem('hoardQToken')
@@ -21,9 +22,9 @@ const Expert = () => {
       navigate('/')
     }
     const res = await ApiService.getExpertDetails(token)
-    console.log(res)
     setExpertDetails(res.data.expert)
     setQuestions(res.data.expert.questionsAssigned)
+    setVerifiedCount(res.data.expert.totalVerified)
   }, [])
   
   return (
@@ -39,7 +40,7 @@ const Expert = () => {
               placement='right'
               onClose={onSideClose}
               btnRef={btnRef}
-              name={expertDetails.name} email={expertDetails.email} subjects={expertDetails.subjects} totalVerified={expertDetails.totalVerified}/>
+              name={expertDetails.name} email={expertDetails.email} subjects={expertDetails.subjects} totalVerified={verifiedCount}/>
           </Flex>
       {
         typeof questions === 'undefined'?<Text align={"center"}>Loading...</Text>:''
@@ -48,7 +49,7 @@ const Expert = () => {
         questions?.length ===0?<Text align={"center"}>No questions assigned</Text>:''
       }
       {
-        questions?.map((question,index )=> (<ExpertQuestion index={index} key={question._id}question={question} setQuestions={setQuestions}/>))
+        questions?.map((question, index) => (<ExpertQuestion index={index} setVerifiedCount={setVerifiedCount}key={question._id}question={question} setQuestions={setQuestions}/>))
           }
       
 

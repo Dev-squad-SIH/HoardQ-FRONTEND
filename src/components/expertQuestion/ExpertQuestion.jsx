@@ -5,8 +5,7 @@ import { ApiService } from '../../api.services';
 import { useSubject } from '../../subjectContext';
 import SelectTopics from '../selectTopics';
 
-const ExpertQuestion = ({ index, question, setQuestions }) => {
-  console.log(index)
+const ExpertQuestion = ({ index, question, setQuestions,setVerifiedCount }) => {
   const { topics } = useSubject()
   const toast = useToast()
   const { subject, _id:id, description, questionType:type, option, answer, solution } = question;
@@ -40,6 +39,7 @@ const ExpertQuestion = ({ index, question, setQuestions }) => {
       setQuestions(questions =>[...questions.slice(0,index),...questions.slice(index+1)])
       setTopic([])
       setDifficulty('')
+      setVerifiedCount(count=>count+1)
     }
     setIsFreezing(false)
     return

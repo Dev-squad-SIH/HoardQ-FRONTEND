@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import {FRONT_URL} from '../../config'
 const FilterQuestionCard = ({ question }) => {
     let { subject, topics, difficulty, description, questionType:type,_id:id, option:options, answer, solution } = question;
-    console.log( subject, topics, difficulty, description, type,options,answer,solution)
   const [shuffRhs,setShuffRhs] = useState([]);
   useEffect(() => {
     if (type === 'Matches') {
