@@ -7,7 +7,7 @@ export const ApiService = {
             data)
     },
     // Options for dropdowns
-    getOptions: () => {
+    getDropdownOptions: () => {
         return axios.get(API_URL + 'api/getSubjectProvider/options')
     },
     getFilteredQuestion: (data, query) => {
@@ -28,5 +28,8 @@ export const ApiService = {
     },
     dropQuestion: (token, qID) => {
         return axios.delete(API_URL + `api/dropQuestion/${qID}`, { headers: { auth_token: token } })
+    },
+    generatePDF: (data) => {
+        return axios.post(API_URL + 'api/pdfGenerate', data)
     }
 }

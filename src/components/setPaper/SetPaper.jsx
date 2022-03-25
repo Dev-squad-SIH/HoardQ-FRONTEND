@@ -30,6 +30,7 @@ import { useDisclosure } from "@chakra-ui/react";
 import { FaFilePdf } from "react-icons/fa"
 import { useSubject } from '../../subjectContext'
 import SelectTopics from '../selectTopics';
+import {ApiService} from '../../api.services'
 const SetPaper = ({isOpen,onClose}) => {
   const {types,difficulties,subjects,topics} = useSubject()
   const { isOpen:isTopicOpen, onOpen:onTopicOpen, onClose:onTopicClose } = useDisclosure()
@@ -37,12 +38,15 @@ const SetPaper = ({isOpen,onClose}) => {
   const [sub, setSub] = useState()
   const [difficulty, setDifficulty] = useState()
   const [openDownload, setOpenDownload] = useState(false)
-  const [fillUps, setFillUps] = useState(0)
+  // const [fillUps, setFillUps] = useState(0)
   const [matches, setMatches] = useState(0)
   const [TF,setTF] = useState(0)
   const [MCQ,setMCQ] = useState(0)
-  const generateHandler = () => {
-    console.log(sub,difficulty,fillUps,matches,TF,MCQ,topicArr)
+  const generateHandler = async() => {
+    const data = { matches, MCQ, TF, difficulty, subject: sub, topics: topicArr }
+    console.log(data)
+    const res = await ApiService.generatePDF(data)
+    console.log(res)
     setOpenDownload(true)
   }
   return (
@@ -60,7 +64,7 @@ const SetPaper = ({isOpen,onClose}) => {
                     <FormControl mx={3} mb={2} key={type}maxW={'100px'}>
                       <FormLabel fontWeight={"bold"}>{type}</FormLabel>
                       <NumberInput size='xs' step={1} defaultValue={0} min={0} max={6}>
-                        <NumberInputField value={fillUps} />
+                        <NumberInputField />
                         {/* {
                           type === "Fill Ups" ?
                             (<NumberInputStepper>
