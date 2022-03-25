@@ -30,6 +30,6 @@ export const ApiService = {
         return axios.delete(API_URL + `api/dropQuestion/${qID}`, { headers: { auth_token: token } })
     },
     generatePDF: (data) => {
-        return axios.post(API_URL + 'api/pdfGenerate', data)
+        return axios.post(API_URL + 'api/pdfGenerate', data, { responseType: "blob" })
     }
 }

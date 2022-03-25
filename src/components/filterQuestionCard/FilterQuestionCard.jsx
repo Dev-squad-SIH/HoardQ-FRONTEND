@@ -36,7 +36,7 @@ const FilterQuestionCard = ({ question }) => {
               <Box>
                   <span><b>Subject</b><Tag mx={1}>{subject}</Tag></span>
                   <Tag mx={3}>{difficulty}</Tag>
-                  <Tag mx={3}>{type}</Tag>
+            <Tag mx={3}>{type}</Tag>
               </Box>
             <Spacer />
           <IconButton icon={<LinkIcon />} onClick={()=>questionLink()}/>

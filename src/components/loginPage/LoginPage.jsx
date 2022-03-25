@@ -66,7 +66,7 @@ const LoginPage = () => {
     <Flex width="full" alignItems="center" justifyContent="center" marginTop="50px">
     <Box  p={8} maxWidth="500px" borderWidth={1} borderRadius={8} boxShadow="lg" width="350px" heigth="600px" border="1.5px solid #cad7cd">
       <Box textAlign="center">
-        <Heading>Login</Heading>
+        <Heading>Expert Login</Heading>
       </Box>
       <Box my={4} textAlign="left">
           <FormControl mt={10} isRequired>

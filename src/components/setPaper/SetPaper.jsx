@@ -1,5 +1,5 @@
 import styles from './styles.module.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import {ReactSelect} from "react-select"
 import {
   Modal,
@@ -37,18 +37,35 @@ const SetPaper = ({isOpen,onClose}) => {
   const [topicArr, setTopic] = useState([])
   const [sub, setSub] = useState()
   const [difficulty, setDifficulty] = useState()
-  const [openDownload, setOpenDownload] = useState(false)
   // const [fillUps, setFillUps] = useState(0)
   const [matches, setMatches] = useState(0)
   const [TF,setTF] = useState(0)
-  const [MCQ,setMCQ] = useState(0)
+  const [MCQ, setMCQ] = useState(0)
+  const [canGen,setCanGen] = useState(false)
   const generateHandler = async() => {
     const data = { matches, MCQ, TF, difficulty, subject: sub, topics: topicArr }
     console.log(data)
     const res = await ApiService.generatePDF(data)
-    console.log(res)
-    setOpenDownload(true)
+    console.log(res.data)
+    const questionPaper = new Blob([res.data], { type: "application/pdf" })
+    const fileURL = URL.createObjectURL(questionPaper)
+    window.open(fileURL)
+    setMatches(0)
+    setTF(0)
+    setMCQ(0)
+    setDifficulty('')
+    setSub('')
+    setTopic([])
   }
+  useEffect(() => {
+    console.log(topicArr)
+    if (topicArr.length && difficulty && sub) {
+      if (matches || TF || MCQ) {
+        setCanGen(true)
+      }
+    }
+  }, [matches,TF,MCQ,sub,difficulty,topicArr])
+  
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -110,17 +127,8 @@ const SetPaper = ({isOpen,onClose}) => {
             </Select>
             <Flex mt={5}>
               <Button onClick={onTopicOpen} disabled={sub?false:true}>Choose Topics</Button>
-              <Button ml={3}colorScheme={"green"} onClick={()=>generateHandler()}>Generate</Button>
-            </Flex>
-            {
-              openDownload ? (
-                <Flex mt={3}>
-                  <Button>Question paper <Icon ml={1}as={FaFilePdf}/></Button>
-                  <Button ml={3}>Solution <Icon ml={1}as={FaFilePdf}/></Button>
-                </Flex>
-              ):''
-            }
-            
+              <Button ml={3}colorScheme={"green"} disabled={!canGen} onClick={()=>generateHandler()}>Generate</Button>
+            </Flex>     
             </ModalBody>
 
           <ModalFooter>
