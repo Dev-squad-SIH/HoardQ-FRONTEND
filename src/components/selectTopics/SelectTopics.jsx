@@ -9,7 +9,7 @@ const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
       let topicIndex = topicArr.indexOf(topic);
       setTopic(topicArr => [...topicArr.slice(0,topicIndex),...topicArr.slice(topicIndex+1)])
     } else {
-      setTopic(topicArr=>[...topicArr,topic])
+      setTopic(topicArr => [...topicArr, topic])
     }
   }
   return (
@@ -22,7 +22,8 @@ const SelectTopics = ({ isOpen, onClose, sub,topics,topicArr,setTopic }) => {
     <>
       {
               sub?topics[sub].map(topic => (
-                <Tag size={'md'} key={topic}mr={2} variant='subtle' colorScheme={topicArr.includes(topic)?'red':'cyan'} value={topic} onClick={e=>selectTopicHandler(e,topic)}>
+                // <Tag size={'md'} key={topic}mr={2} variant='subtle' colorScheme={topicArr.includes(topic)?'red':'cyan'} value={topic} onClick={e=>selectTopicHandler(e,topic)}>
+                <Tag size={'md'} key={topic}mr={2} my={1} variant='subtle' colorScheme={topicArr.includes(topic)?'red':'cyan'} onClick={e=>selectTopicHandler(e,topic)}>
                   {topicArr.includes(topic) ? (<TagLeftIcon boxSize='12px' as={MinusIcon} />) : (<TagLeftIcon boxSize='12px' as={AddIcon} />)}
                   <TagLabel>{topic}</TagLabel>
                 </Tag>

@@ -17,7 +17,7 @@ const ExpertQuestion = ({ index, question, setQuestions,setVerifiedCount }) => {
   const [isFreezing, setIsFreezing] = useState(false)
   const [isFreezable,setIsFreezable] = useState(false)
   useEffect(() => {
-    if (topicArr !== [] && difficulty) setIsFreezable(true)
+    if (topicArr.length && difficulty) setIsFreezable(true)
     return
   }, [topicArr,difficulty])
   
@@ -26,7 +26,7 @@ const ExpertQuestion = ({ index, question, setQuestions,setVerifiedCount }) => {
     setIsFreezing(true)
     const qID = id;
     const token = localStorage.getItem('hoardQToken')
-    const data = { topicArr, difficulty }
+    const data = { topics:topicArr, difficulty }
     const res = await ApiService.freezeQuestion(token, qID,data)
     console.log(res)
     if (res.status === 200) {

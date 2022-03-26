@@ -25,10 +25,12 @@ const FilterQuestions = () => {
   // Fix infinite scrolling
   const filterHandler = async () => {
     setPage(0)
+    console.log(page)
     setHasMore(true)
     setFilterLoading(true)
     const data = { topics:topicArr, difficulty, subject:sub, type }
     const query = {page:page+1,limit}
+    console.log(query)
     const res = await ApiService.getFilteredQuestion(data, query)
     console.log(res)
     setFilterLoading(false)

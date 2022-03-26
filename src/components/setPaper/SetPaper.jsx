@@ -35,27 +35,25 @@ const SetPaper = ({isOpen,onClose}) => {
   const {types,difficulties,subjects,topics} = useSubject()
   const { isOpen:isTopicOpen, onOpen:onTopicOpen, onClose:onTopicClose } = useDisclosure()
   const [topicArr, setTopic] = useState([])
-  const [sub, setSub] = useState()
-  const [difficulty, setDifficulty] = useState()
+  const [sub, setSub] = useState('')
+  const [difficulty, setDifficulty] = useState('')
   // const [fillUps, setFillUps] = useState(0)
   const [matches, setMatches] = useState(0)
   const [TF,setTF] = useState(0)
   const [MCQ, setMCQ] = useState(0)
-  const [canGen,setCanGen] = useState(false)
+  const [canGen, setCanGen] = useState(false)
+  const [isGenLoading, setIsGenLoading] = useState(false);
   const generateHandler = async() => {
-    const data = { matches, MCQ, TF, difficulty, subject: sub, topics: topicArr }
+    setIsGenLoading(true)
+    const data = { matches, Mcqs:MCQ, TF, difficulty, subject: sub, topics: topicArr }
     console.log(data)
     const res = await ApiService.generatePDF(data)
+    setIsGenLoading(false)
     console.log(res.data)
     const questionPaper = new Blob([res.data], { type: "application/pdf" })
     const fileURL = URL.createObjectURL(questionPaper)
     window.open(fileURL)
-    setMatches(0)
-    setTF(0)
-    setMCQ(0)
-    setDifficulty('')
-    setSub('')
-    setTopic([])
+    
   }
   useEffect(() => {
     console.log(topicArr)
@@ -127,7 +125,7 @@ const SetPaper = ({isOpen,onClose}) => {
             </Select>
             <Flex mt={5}>
               <Button onClick={onTopicOpen} disabled={sub?false:true}>Choose Topics</Button>
-              <Button ml={3}colorScheme={"green"} disabled={!canGen} onClick={()=>generateHandler()}>Generate</Button>
+              <Button ml={3}colorScheme={"green"} disabled={!canGen} isLoading={isGenLoading} onClick={()=>generateHandler()}>Generate</Button>
             </Flex>     
             </ModalBody>
 
